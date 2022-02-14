@@ -1,0 +1,82 @@
+<template>
+  <v-row>
+    <v-col v-for="(item, index) in statsCards" :key="index" cols="12" md="6" lg="2" style="color: white">
+      <v-card elevation="1" :color="item.color" style="position: relative">
+        <div style="position: absolute; top: 10px; right: 10px">
+          <v-icon large :color="item.color+' darken-3'">mdi-{{ item.icon }}</v-icon>
+        </div>
+        <v-card-title class="white--text">
+          {{ item.title }}
+        </v-card-title>
+        <v-card-text>
+          <div>
+            <h4 class="white--text">
+              Rp{{ new Intl.NumberFormat('id-ID').format(item.value) }}
+            </h4>
+            <div class="text-right">
+              <v-chip small :color="item.color+' lighten-1'">
+                {{ item.percentage }}%
+              </v-chip>
+            </div>
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-col>
+  </v-row>
+</template>
+
+<script>
+  export default {
+    data() {
+      return {
+        statsCards: [{
+            title: 'PRK',
+            value: 19000000000,
+            percentage: 100,
+            color: 'primary',
+            icon: 'puzzle'
+          },
+          {
+            title: 'SKKI',
+            value: 19000000000,
+            percentage: 100,
+            color: 'red',
+            icon: 'note-text'
+          },
+          {
+            title: 'Pengadaan',
+            value: 19000000000,
+            percentage: 100,
+            color: 'amber',
+            icon: 'cart'
+          },
+          {
+            title: 'Kontrak',
+            value: 19000000000,
+            percentage: 100,
+            color: 'success',
+            icon: 'file-sign'
+          },
+          {
+            title: 'Pelaksanaan',
+            value: 19000000000,
+            percentage: 100,
+            color: 'purple',
+            icon: 'crane'
+          },
+          {
+            title: 'Pembayaran',
+            value: 19000000000,
+            percentage: 100,
+            color: 'secondary',
+            icon: 'currency-usd'
+          }
+        ],
+      }
+    }
+  }
+</script>
+
+<style>
+
+</style>
