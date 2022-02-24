@@ -52,12 +52,33 @@
         </v-card-text>
       </v-card>
     </v-col>
+
+    <v-col cols="12">
+      <detail-pengadaan/>
+    </v-col>
+
+    <v-col cols="12">
+      <detail-kontrak/>
+    </v-col>
   </v-row>
 </template>
 
 <script>
+import DetailPrk from '~/components/project/DetailPrk.vue'
+import DetailSkki from '~/components/project/DetailSkki.vue'
+import DetailPengadaan from '~/components/project/DetailPengadaan.vue'
+import DetailKontrak from '~/components/project/DetailKontrak.vue'
+import DetailPelaksanaan from '~/components/project/DetailPelaksanaan.vue'
+import DetailPembayaran from '~/components/project/DetailPembayaran.vue'
   export default {
-    components: {},
+    components: {
+      DetailPrk,
+      DetailSkki,
+      DetailPengadaan,
+      DetailKontrak,
+      DetailPelaksanaan,
+      DetailPembayaran,
+    },
     data() {
       return {
         breadcrumbItems: [{
@@ -184,6 +205,10 @@
           },
         ],
       }
+    },
+    mounted() {
+      let query = this.$route.query
+      console.log(1)
     }
   }
 </script>

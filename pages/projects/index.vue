@@ -135,7 +135,10 @@
         tableProjectItems: [
         ],
       }
-    }
+    },
+    mounted() {
+      let query = this.$route.query
+    },
   }
 
 </script>

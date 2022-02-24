@@ -19,17 +19,14 @@
             <v-list-item-title>Dashboard</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-group :value="true" no-action prepend-icon="mdi-crane">
+        <v-list-group :value="false" no-action prepend-icon="mdi-crane">
           <template v-slot:activator>
             <v-list-item-content>
               <v-list-item-title>List Project</v-list-item-title>
             </v-list-item-content>
           </template>
 
-          <v-list-item to="/projects" router exact link>
-            <v-list-item-title>Semua</v-list-item-title>
-          </v-list-item>
-          <v-list-item v-for="([title, link], i) in admins" :key="i" :to="'/projects?tahap='+link" router exact link>
+          <v-list-item v-for="([title, link], i) in admins" :key="i" :to="'/projects/tahap/'+link" router exact link>
             <v-list-item-title>{{ title }}</v-list-item-title>
           </v-list-item>
         </v-list-group>
@@ -73,7 +70,7 @@ export default {
         ['Kontrak', 'kontrak'],
         ['Pelaksanaan', 'pelaksanaan'],
         ['Pembayaran', 'pembayaran'],
-        
+
       ],
       title: 'Monitoring'
     }

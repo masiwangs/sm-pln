@@ -1,12 +1,7 @@
 <template>
   <v-card class="py-4">
+    <v-card-title>List Kontrak</v-card-title>
     <v-card-text>
-      <div class="d-flex justify-space-between align-center py-2">
-        <h3>List Kontrak</h3>
-        <v-btn small elevation="2" color="primary">
-          <v-icon class="me-2">mdi-plus</v-icon> Kontrak baru
-        </v-btn>
-      </div>
       <v-divider class="mb-6"></v-divider>
       <v-data-table :headers="tableJasaHeader" :items="tableJasaItems" :items-per-page="5" class="elevation-1 mb-4">
       </v-data-table>
