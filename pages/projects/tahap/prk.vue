@@ -2,166 +2,26 @@
   <v-row>
     <v-col cols="12">
       <v-breadcrumbs :items="breadcrumbItems" class="px-0"></v-breadcrumbs>
-      <div class="">
+      <div>
         <h4 style="margin-bottom: -.25rem" class="grey--text">List Project</h4>
         <h2>Tahap PRK</h2>
       </div>
     </v-col>
+
     <v-col cols="12">
-      <v-card>
-        <v-card-title class="d-flex justify-space-between">
-          <div>Basket 1</div>
-          <v-btn v-on:click="buatProjectBaru(1)">Baru</v-btn>
-        </v-card-title>
-        <v-data-table :headers="tbl_header" :items="tbl_items_basket_1" item-key="id" :items-per-page="5"
-          class="elevation-1 mb-4">
-          <template v-slot:item.rab_jasa="{ item }">
-            <a href="javascript:void(0)" v-on:click="detailJasa(item.id, item.nama_project)">
-              Rp{{ new Intl.NumberFormat('id-ID').format(item.rab_jasa) }}
-            </a>
-          </template>
-          <template v-slot:item.rab_material="{ item }">
-            <a href="javascript:void(0)" v-on:click="detailMaterial(item.id, item.nama_project)">
-              Rp{{ new Intl.NumberFormat('id-ID').format(item.rab_material) }}
-            </a>
-          </template>
-        </v-data-table>
-      </v-card>
+      <tabel-basket :no_basket="1" @show_material="showMaterial" @show_jasa="showJasa"/>
+    </v-col>
+
+    <v-col cols="12">
+      
     </v-col>
     <v-col cols="12">
-      <v-card>
-        <v-card-title class="d-flex justify-space-between">
-          <div>Basket 2</div>
-          <v-btn v-on:click="buatProjectBaru(2)">Baru</v-btn>
-        </v-card-title>
-        <v-data-table :headers="tbl_header" :items="tbl_items_basket_2" item-key="name" :items-per-page="5"
-          class="elevation-1 mb-4">
-          <template v-slot:item.rab_jasa="{ item }">
-            <a href="javascript:void(0)" v-on:click="detailJasa(item.id, item.nama_project)">
-              Rp{{ new Intl.NumberFormat('id-ID').format(item.rab_jasa) }}
-            </a>
-          </template>
-          <template v-slot:item.rab_material="{ item }">
-            <a href="javascript:void(0)" v-on:click="detailMaterial(item.id, item.nama_project)">
-              Rp{{ new Intl.NumberFormat('id-ID').format(item.rab_material) }}
-            </a>
-          </template>
-        </v-data-table>
-      </v-card>
+      
     </v-col>
-    <v-col cols="12">
-      <v-card>
-        <v-card-title class="d-flex justify-space-between">
-          <div>Basket 3</div>
-          <v-btn v-on:click="buatProjectBaru(3)">Baru</v-btn>
-        </v-card-title>
-        <v-data-table :headers="tbl_header" :items="tbl_items_basket_3" item-key="name" :items-per-page="5"
-          class="elevation-1 mb-4">
-          <template v-slot:item.rab_jasa="{ item }">
-            <a href="javascript:void(0)" v-on:click="detailJasa(item.id, item.nama_project)">
-              Rp{{ new Intl.NumberFormat('id-ID').format(item.rab_jasa) }}
-            </a>
-          </template>
-          <template v-slot:item.rab_material="{ item }">
-            <a href="javascript:void(0)" v-on:click="detailMaterial(item.id, item.nama_project)">
-              Rp{{ new Intl.NumberFormat('id-ID').format(item.rab_material) }}
-            </a>
-          </template>
-        </v-data-table>
-      </v-card>
-    </v-col>
-    <v-dialog v-model="material_dialog" max-width="640px">
-      <v-card>
-        <v-card-title class="text-h5">
-          Detail Material {{ detail_material_value.nama_project }}
-        </v-card-title>
+    
+    <material-list :is_show="material.is_show" :data="material.data" @hide_dialog="material.is_show = false"/>
+    <jasa-list :is_show="jasa.is_show" :data="jasa.data" @hide_dialog="jasa.is_show = false"/>
 
-        <v-card-text v-if="!detail_material_value.loading">
-          <v-simple-table>
-            <template v-slot:default>
-              <thead>
-                <tr>
-                  <th class="text-left">Nama</th>
-                  <th class="text-left">Jumlah</th>
-                  <th class="text-left">Harga (Rp)</th>
-                  <th class="text-left">Total (Rp)</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(item, index) in detail_material_value.data" :key="index">
-                  <td>{{ item.nama }}</td>
-                  <td>{{ item.jumlah }}</td>
-                  <td>Rp{{ new Intl.NumberFormat('id-ID').format(item.harga) }}</td>
-                  <td>Rp{{ new Intl.NumberFormat('id-ID').format(item.total) }}</td>
-                </tr>
-              </tbody>
-            </template>
-          </v-simple-table>
-        </v-card-text>
-        <v-progress-linear
-            v-show="detail_material_value.loading"
-            indeterminate
-            color="primary"
-            class="mb-0"
-        ></v-progress-linear>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-
-          <v-btn text @click="material_dialog = false" color="red">
-            Edit
-          </v-btn>
-
-          <v-btn text @click="material_dialog = false" color="primary">
-            Tutup
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-    <v-dialog v-model="jasa_dialog" max-width="640px">
-      <v-card>
-        <v-card-title class="text-h5">
-          Detail Jasa {{ detail_jasa_value.nama_project }}
-        </v-card-title>
-
-        <v-card-text v-if="!detail_jasa_value.loading">
-          <v-simple-table>
-            <template v-slot:default>
-              <thead>
-                <tr>
-                  <th class="text-left">Nama</th>
-                  <th class="text-left">Nilai (Rp)</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(item, index) in detail_jasa_value.data" :key="index">
-                  <td>{{ item.nama }}</td>
-                  <td>Rp{{ new Intl.NumberFormat('id-ID').format(item.nilai) }}</td>
-                </tr>
-              </tbody>
-            </template>
-          </v-simple-table>
-        </v-card-text>
-        <v-progress-linear
-            v-show="detail_jasa_value.loading"
-            indeterminate
-            color="primary"
-            class="mb-0"
-        ></v-progress-linear>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-
-          <v-btn text @click="jasa_dialog = false" color="red">
-            Edit
-          </v-btn>
-
-          <v-btn text @click="jasa_dialog = false" color="primary">
-            Tutup
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
     <v-dialog v-model="project_baru_dialog.is_open"
       fullscreen
       hide-overlay
@@ -340,8 +200,11 @@
 </template>
 
 <script>
+  import TabelBasket from '~/components/project/tahap/TabelBasket.vue'
+  import MaterialList from '~/components/dialog/MaterialList.vue'
+  import JasaList from '~/components/dialog/JasaList.vue'
   export default {
-    components: {},
+    components: {TabelBasket, MaterialList, JasaList},
     data() {
       return {
         breadcrumbItems: [{
@@ -355,69 +218,15 @@
           },
         ],
 
-        tbl_header: [{
-            text: 'Nama Project',
-            value: 'nama_project'
-          },
-          {
-            text: 'PRK',
-            value: 'prk'
-          },
-          {
-            text: 'RAB Jasa (Rp)',
-            value: 'rab_jasa'
-          },
-          {
-            text: 'RAB Material (Rp)',
-            value: 'rab_material'
-          },
-        ],
+        material: {
+          is_show: false,
+          data: []
+        },
 
-        tbl_items_basket_1: [{
-            id: 1,
-            prk: 'PRK0101',
-            nama_project: 'Project A',
-            rab_jasa: 190000000,
-            rab_material: 1000000000
-          },
-          {
-            id: 2,
-            prk: 'PRK0102',
-            nama_project: 'Project B',
-            rab_jasa: 180000000,
-            rab_material: 2000000000
-          },
-        ],
-        tbl_items_basket_2: [{
-            id: 3,
-            prk: 'PRK0201',
-            nama_project: 'Project C',
-            rab_jasa: 192000000,
-            rab_material: 3000000000
-          },
-          {
-            id: 4,
-            prk: 'PRK0202',
-            nama_project: 'Project D',
-            rab_jasa: 181000000,
-            rab_material: 2300000000
-          },
-        ],
-        tbl_items_basket_3: [{
-            id: 5,
-            prk: 'PRK0301',
-            nama_project: 'Project E',
-            rab_jasa: 190000000,
-            rab_material: 1000000000
-          },
-          {
-            id: 6,
-            prk: 'PRK0302',
-            nama_project: 'Project F',
-            rab_jasa: 184000000,
-            rab_material: 2100000000
-          },
-        ],
+        jasa: {
+          is_show: false,
+          data: []
+        },
 
         jasa_dialog: false,
         material_dialog: false,
@@ -446,10 +255,19 @@
         jasa_project_baru: {
           jasa: '',
           nilai: ''
-        }
+        },
+        count: 0
       }
     },
     methods: {
+      showMaterial(data) {
+        this.material.data = data
+        this.material.is_show = true
+      },
+      showJasa(data) {
+        this.jasa.data = data
+        this.jasa.is_show = true
+      },
       detailJasa(id, nama_project) {
         this.detail_jasa_value.nama_project = nama_project
         this.jasa_dialog = true
@@ -525,6 +343,11 @@
       },
       hapusJasaProjectBaru(i) {
         this.project_baru_dialog.list_jasa = this.project_baru_dialog.list_jasa.filter((item, index) => index !== i)
+      },
+
+      increaseCount(n) {
+        this.count += n
+        console.log(this.count)
       }
     },
   }
