@@ -1,55 +1,28 @@
 <template>
-  <apexchart type="radialBar" height="350" :options="chartOptions" :series="series"></apexchart>
+  <apexchart type="radialBar" height="120" width="120" :options="chartOptions" :series="series"></apexchart>
 </template>
 
 <script>
   export default {
     data() {
       return {
-        series: [66],
-        chartOptions: {
-          chart: {
-            height: 350,
-            type: 'radialBar',
-            offsetY: -10
-          },
-          plotOptions: {
-            radialBar: {
-              startAngle: -135,
-              endAngle: 135,
-              dataLabels: {
-                name: {
-                  fontSize: '16px',
-                  color: '#333',
-                  offsetY: 110
+        series: [70],
+          chartOptions: {
+            chart: {
+              height: 120,
+              type: 'radialBar',
+            },
+            plotOptions: {
+              radialBar: {
+                hollow: {
+                  size: '30%',
                 },
-                value: {
-                  offsetY: 76,
-                  fontSize: '22px',
-                  color: undefined,
-                  formatter: function (val) {
-                    return val + "%";
-                  }
+                dataLabels: {
+                show: false
                 }
-              }
-            }
-          },
-          fill: {
-            type: 'gradient',
-            gradient: {
-              shade: 'dark',
-              shadeIntensity: 0.15,
-              inverseColors: false,
-              opacityFrom: 1,
-              opacityTo: 1,
-              stops: [0, 50, 65, 91]
+              },
             },
           },
-          stroke: {
-            dashArray: 4
-          },
-          labels: ['progress'],
-        },
       }
     }
   }

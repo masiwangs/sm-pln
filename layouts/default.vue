@@ -1,60 +1,67 @@
 <template>
-  <v-app dark>
-    <v-navigation-drawer
-      v-model="drawer"
-      clipped
-      fixed
-      app
-    >
-      <v-list>
-        <v-list-item
-          to="/"
-          router
-          exact
+    <v-app dark>
+        <v-navigation-drawer
+            v-model="drawer"
+            clipped
+            fixed
+            app
+            class="px-4 rounded-r-lg"
         >
-          <v-list-item-action>
-            <v-icon>mdi-desktop-mac-dashboard</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Dashboard</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-group :value="false" no-action prepend-icon="mdi-crane">
-          <template v-slot:activator>
-            <v-list-item-content>
-              <v-list-item-title>List Project</v-list-item-title>
-            </v-list-item-content>
-          </template>
-
-          <v-list-item v-for="([title, link], i) in admins" :key="i" :to="'/projects/tahap/'+link" router exact link>
-            <v-list-item-title>{{ title }}</v-list-item-title>
-          </v-list-item>
-        </v-list-group>
-      </v-list>
-    </v-navigation-drawer>
-    <v-app-bar
-      clipped-left
-      fixed
-      app
-      dark
-      color="primary"
-    >
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-
-      <v-toolbar-title v-text="title" />
-      <v-spacer />
-      <v-btn
-        icon
-      >
-        <v-icon>mdi-menu</v-icon>
-      </v-btn>
-    </v-app-bar>
-    <v-main>
-      <v-container>
-        <Nuxt />
-      </v-container>
-    </v-main>
-  </v-app>
+            <v-list
+                rounded
+            >
+                <v-list-item
+                    to="/"
+                    router
+                    exact
+                    color="indigo"
+                >
+                    <v-list-item-icon>
+                        <v-icon>mdi-desktop-mac-dashboard</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                        <v-list-item-title>Dashboard</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+                <v-subheader>Tahapan</v-subheader>
+                <v-list-item
+                    v-for="([title, link, icon], i) in admins"
+                    :key="i"
+                    :to="'/projects/'+link"
+                    router
+                    exact
+                    link
+                    color="indigo"
+                >
+                <v-list-item-action>
+                    <v-icon>mdi-{{ icon }}</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                    <v-list-item-title>{{ title }}</v-list-item-title>
+                </v-list-item-content>
+                </v-list-item>
+                <v-subheader>Database</v-subheader>
+                <v-list-item
+                    to="/materials"
+                    router
+                    exact
+                    color="indigo"
+                >
+                    <v-list-item-icon>
+                        <v-icon>mdi-package-variant-closed</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                        <v-list-item-title>Material</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
+            </v-list>
+        </v-navigation-drawer>
+        <v-main class="indigo lighten-5">
+        <v-container>
+            <Nuxt />
+        </v-container>
+        </v-main>
+    </v-app>
 </template>
 
 <script>
@@ -64,12 +71,12 @@ export default {
     return {
       drawer: true,
       admins: [
-        ['PRK', 'prk'],
-        ['SKKI', 'skki'],
-        ['Pengadaan', 'pengadaan'],
-        ['Kontrak', 'kontrak'],
-        ['Pelaksanaan', 'pelaksanaan'],
-        ['Pembayaran', 'pembayaran'],
+        ['PRK', 'prk', 'puzzle'],
+        ['SKKI', 'skki', 'file'],
+        ['Pengadaan', 'pengadaan', 'cart'],
+        ['Kontrak', 'kontrak', 'file-sign'],
+        ['Pelaksanaan', 'pelaksanaan', 'crane'],
+        ['Pembayaran', 'pembayaran', 'cash'],
 
       ],
       title: 'Monitoring'
