@@ -238,7 +238,7 @@
                         </v-col>
                         <v-col cols="12" class="d-flex flex-row">
                             <div class="me-2">
-                                <v-btn @click="new_material_dialog.is_show = true" dark class="rounded-lg" elevation="0" color="indigo accent-2"><v-icon class="mr-2">mdi-plus-box</v-icon> Baru</v-btn>
+                                <v-btn @click="newMaterial()" dark class="rounded-lg" elevation="0" color="indigo accent-2"><v-icon class="mr-2">mdi-plus-box</v-icon> Baru</v-btn>
                                 <!-- material baru input manual start -->
                                 <v-dialog
                                     max-width="400px"
@@ -251,15 +251,17 @@
                                             <v-container>
                                                 <v-form>
                                                     <label for="">Kode Normalisasi</label>
-                                                    <v-text-field
+                                                    <v-autocomplete
                                                         filled
                                                         rounded
                                                         :hide-details="true"
+                                                        :items="new_material_dialog.autocomplete_items.map(el => el.kode_normalisasi)"
                                                         dense
                                                         class="mb-3"
                                                         placeholder="Masukkan kode normalisasi"
-                                                        v-model="new_material_dialog.data.normalisasi"
-                                                    ></v-text-field>
+                                                        v-model="new_material_dialog.data.kode_normalisasi"
+                                                        @change="getDetailMaterial()"
+                                                    ></v-autocomplete>
                                                     <label for="">Nama Material</label>
                                                     <v-text-field
                                                         filled
@@ -268,7 +270,7 @@
                                                         dense
                                                         class="mb-3"
                                                         placeholder="Masukkan nama material"
-                                                        v-model="new_material_dialog.data.nama"
+                                                        v-model="new_material_dialog.data.nama_material"
                                                     ></v-text-field>
                                                     <label for="">Satuan</label>
                                                     <v-text-field
@@ -280,18 +282,6 @@
                                                         placeholder="Masukkan satuan material"
                                                         v-model="new_material_dialog.data.satuan"
                                                     ></v-text-field>
-                                                    <label for="">Jumlah</label>
-                                                    <v-text-field
-                                                        filled
-                                                        rounded
-                                                        :hide-details="true"
-                                                        dense
-                                                        class="mb-3"
-                                                        placeholder="Masukkan jumlah material"
-                                                        v-model="new_material_dialog.data.jumlah"
-                                                        :suffix="new_material_dialog.data.satuan"
-                                                    ></v-text-field>
-                                                    
                                                     <label for="">Harga</label>
                                                     <v-text-field
                                                         filled
@@ -299,10 +289,21 @@
                                                         :hide-details="true"
                                                         dense
                                                         type="number"
-                                                        class="mb-4"
+                                                        class="mb-3"
                                                         placeholder="Masukkan harga material"
                                                         :suffix="'/'+new_material_dialog.data.satuan"
                                                         v-model="new_material_dialog.data.harga"
+                                                    ></v-text-field>
+                                                    <label for="">Jumlah</label>
+                                                    <v-text-field
+                                                        filled
+                                                        rounded
+                                                        :hide-details="true"
+                                                        dense
+                                                        class="mb-4"
+                                                        placeholder="Masukkan jumlah material"
+                                                        v-model="new_material_dialog.data.jumlah"
+                                                        :suffix="new_material_dialog.data.satuan"
                                                     ></v-text-field>
                                                     <div
                                                         class="text-right"
@@ -387,27 +388,29 @@
                             </div>
                         </v-col>
                         <v-col cols="12">
-                            <v-simple-table>
+                            <v-simple-table v-if="materials">
                                 <template v-slot:default>
                                     <thead>
                                         <tr>
-                                            <th class="text-left">Normalisasi</th>
-                                            <th class="text-left">Nama</th>
+                                            <th class="text-left">Kode Normalisasi</th>
+                                            <th class="text-left">Nama Material</th>
                                             <th class="text-left">Jumlah</th>
                                             <th class="text-left">Satuan</th>
                                             <th class="text-left">Harga</th>
+                                            <th class="text-left">Total</th>
                                             <th class="text-left" width="10%">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-for="(item, index) in material" :key="index">
-                                            <td>{{ item.normalisasi }}</td>
-                                            <td>{{ item.nama }}</td>
+                                        <tr v-for="(item, index) in materials" :key="index">
+                                            <td>{{ item.kode_normalisasi }}</td>
+                                            <td>{{ item.nama_material }}</td>
                                             <td>{{ item.jumlah }}</td>
                                             <td>{{ item.satuan }}</td>
-                                            <td>{{ item.harga }}</td>
+                                            <td>Rp{{ new Intl.NumberFormat('id-ID').format(item.harga) }}/{{ item.satuan }}</td>
+                                            <td>Rp{{ new Intl.NumberFormat('id-ID').format(item.harga * item.jumlah) }}</td>
                                             <td>
-                                                <v-btn icon color="text--red" class="elevation-0" @click="deleteMaterial(index)">
+                                                <v-btn icon color="text--red" class="elevation-0" @click="deleteMaterial(item.id)">
                                                     <v-icon color="red">mdi-delete</v-icon>
                                                 </v-btn>
                                             </td>
@@ -491,7 +494,7 @@
 
 <script>
 export default {
-    props: ['is_show', 'detail_project'],
+    props: ['is_show', 'detail_project', 'basket'],
     data() {
         return {
             new_jasa_dialog: {
@@ -503,9 +506,10 @@ export default {
             },
             new_material_dialog: {
                 is_show: false,
+                autocomplete_items: [],
                 data: {
-                    normalisasi: '',
-                    nama: '',
+                    kode_normalisasi: '',
+                    nama_material: '',
                     jumlah: 0,
                     satuan: '',
                     harga: 0
@@ -528,7 +532,7 @@ export default {
                 basket: ''
             },
             jasa: [],
-            material: []
+            materials: []
         }
     },
     methods: {
@@ -540,20 +544,21 @@ export default {
             form_data.append('prioritas', this.new_project.prioritas)
             form_data.append('project_id', 1)
             form_data.append('basket', this.new_project.basket)
-            if(this.new_project.id) {
+            if(this.new_project.id && this.new_project.nama) {
                 this.$axios.post('/prks/'+this.new_project.id, form_data)
                     .then(res => {
                         this.new_project.id = res.data.data.id
                         this.new_project.last_modified = res.data.data.updated_at
                     })
             } else {
-                this.$axios.post('/prks', form_data)
-                    .then(res => {
-                        this.new_project.id = res.data.data.id
-                        this.new_project.last_modified = res.data.data.updated_at
-                    })
+                if(this.new_project.nama) {
+                    this.$axios.post('/prks', form_data)
+                        .then(res => {
+                            this.new_project.id = res.data.data.id
+                            this.new_project.last_modified = res.data.data.updated_at
+                        })
+                }
             }
-            console.log(this.new_project)
         },
         deletePrk() {
             this.$axios.delete('/prks/'+this.new_project.id)
@@ -563,6 +568,16 @@ export default {
                 })
         },
         doneEditingPrk() {
+            this.new_project.id = '';
+            this.new_project.nama = '';
+            this.new_project.no_prk = '';
+            this.new_project.lot_number = '';
+            this.new_project.prioritas = '';
+            this.new_project.last_modified = '';
+            this.new_project.basket = '';
+            this.prioritas = 0;
+            this.materials = [];
+            this.jasa = [];
             this.$emit('reload_data')
             this.$emit('hide_dialog')
         },
@@ -595,15 +610,43 @@ export default {
                     this.jasa = res.data.data
                 })
         },
-        saveMaterial() {
-            this.material.push(this.new_material);
-            this.new_material = {
-                normalisasi: '',
-                nama: '',
-                jumlah: '',
-                satuan: '',
-                harga: ''
-            }
+        loadMaterial() {
+            this.$axios.get('/prks/'+this.new_project.id+'/materials')
+                .then(res => {
+                    this.materials = res.data.data
+                })
+        },
+        newMaterial() {
+            this.$axios.get('/materials')
+                .then(res => {
+                    this.new_material_dialog.autocomplete_items = res.data.data
+                    this.new_material_dialog.is_show = true
+                })
+        },
+        getDetailMaterial() {
+            let autocomplete_items = JSON.parse(JSON.stringify(this.new_material_dialog.autocomplete_items));
+            let material = autocomplete_items.filter(el => el.kode_normalisasi == this.new_material_dialog.data.kode_normalisasi)
+            this.new_material_dialog.data.nama_material = material[0].nama_material
+            this.new_material_dialog.data.satuan = material[0].satuan
+            this.new_material_dialog.data.harga = material[0].harga
+        },
+        saveNewMaterial() {
+            let form_data = new FormData();
+            form_data.append('kode_normalisasi', this.new_material_dialog.data.kode_normalisasi)
+            form_data.append('nama_material', this.new_material_dialog.data.nama_material)
+            form_data.append('jumlah', this.new_material_dialog.data.jumlah)
+            form_data.append('harga', this.new_material_dialog.data.harga)
+            form_data.append('satuan', this.new_material_dialog.data.satuan)
+            this.$axios.post('/prks/'+this.new_project.id+'/materials', form_data)
+                .then(res => {
+                    this.loadMaterial();
+                    this.new_material_dialog.data.kode_normalisasi = ''
+                    this.new_material_dialog.data.nama_material = ''
+                    this.new_material_dialog.data.satuan = ''
+                    this.new_material_dialog.data.harga = ''
+                    this.new_material_dialog.data.jumlah = ''
+                    this.new_material_dialog.is_show = false;
+                })
         },
         deleteJasa(id) {
             this.$axios.delete('/prks/'+this.new_project.id+'/jasas/'+id)
@@ -611,8 +654,11 @@ export default {
                     this.loadJasa()
                 })
         },
-        deleteMaterial(index) {
-            this.material.splice(index, 1)
+        deleteMaterial(id) {
+            this.$axios.delete('/prks/'+this.new_project.id+'/materials/'+id)
+                .then(res => {
+                    this.loadMaterial()
+                })
         }
     },
     watch: {
@@ -630,7 +676,11 @@ export default {
             this.new_project.last_modified = val.updated_at
             this.new_project.basket = val.basket
             this.loadJasa()
-        }
+            this.loadMaterial()
+        },
+        basket(val) {
+            this.new_project.basket = val
+        },
     }
 }
 </script>

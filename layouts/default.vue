@@ -58,6 +58,9 @@
         </v-navigation-drawer>
         <v-main class="indigo lighten-5">
         <v-container>
+            <div v-if="$nuxt.isOffline">
+                <v-snackbar v-model="show_snackbar">Anda sedang offline</v-snackbar>
+            </div>
             <Nuxt />
         </v-container>
         </v-main>
@@ -69,6 +72,7 @@ export default {
   name: 'DefaultLayout',
   data () {
     return {
+        show_snackbar: true,
       drawer: true,
       admins: [
         ['PRK', 'prk', 'puzzle'],
