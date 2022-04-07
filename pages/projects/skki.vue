@@ -10,31 +10,69 @@
 
         <v-col cols="12">
             <v-card elevation="0" class="rounded-lg">
-            <v-card-title class="d-flex justify-space-between">
-                <div>Basket 1</div>
-                <v-btn elevation="0" class="rounded-lg" v-on:click="newSKKI(1)" color="primary"><v-icon class="mr-2">mdi-plus-box</v-icon> Baru</v-btn>
-            </v-card-title>
-            <v-divider class="mx-4"></v-divider>
-            <v-card-text>
-                <skki-table 
-                    v-if="!table_loading"
-                    :basket="1" 
-                    :data="data_skki_basket_1" 
-                    @show_detail="detailSkki"
-                />
-                <div
-                    v-else
-                >
-                    <p>Sedang memuat...</p>
-                </div>
-            </v-card-text>
-        </v-card>
+                <v-card-title class="d-flex justify-space-between">
+                    <div>Basket 1</div>
+                    <v-btn elevation="0" class="rounded-lg" v-on:click="newSKKI(1)" color="primary"><v-icon class="mr-2">mdi-plus-box</v-icon> Baru</v-btn>
+                </v-card-title>
+                <v-divider class="mx-4"></v-divider>
+                <v-card-text>
+                    <skki-table 
+                        v-if="!table_loading"
+                        :basket="1" 
+                        :data="data_skki_basket_1" 
+                        @show_detail="detailSkki"
+                    />
+                    <div
+                        v-else
+                    >
+                        <p>Sedang memuat...</p>
+                    </div>
+                </v-card-text>
+            </v-card>
         </v-col>
         <v-col cols="12">
-          <basket-card tahap="skki" :basket="2" @show_material="showMaterial" @show_jasa="showJasa" @new_project="newProject"/>
+          <v-card elevation="0" class="rounded-lg">
+                <v-card-title class="d-flex justify-space-between">
+                    <div>Basket 2</div>
+                    <v-btn elevation="0" class="rounded-lg" v-on:click="newSKKI(2)" color="primary"><v-icon class="mr-2">mdi-plus-box</v-icon> Baru</v-btn>
+                </v-card-title>
+                <v-divider class="mx-4"></v-divider>
+                <v-card-text>
+                    <skki-table 
+                        v-if="!table_loading"
+                        :basket="2" 
+                        :data="data_skki_basket_2" 
+                        @show_detail="detailSkki"
+                    />
+                    <div
+                        v-else
+                    >
+                        <p>Sedang memuat...</p>
+                    </div>
+                </v-card-text>
+            </v-card>
         </v-col>
         <v-col cols="12">
-          <basket-card tahap="skki" :basket="3" @show_material="showMaterial" @show_jasa="showJasa" @new_project="newProject"/>
+          <v-card elevation="0" class="rounded-lg">
+                <v-card-title class="d-flex justify-space-between">
+                    <div>Basket 3</div>
+                    <v-btn elevation="0" class="rounded-lg" v-on:click="newSKKI(3)" color="primary"><v-icon class="mr-2">mdi-plus-box</v-icon> Baru</v-btn>
+                </v-card-title>
+                <v-divider class="mx-4"></v-divider>
+                <v-card-text>
+                    <skki-table 
+                        v-if="!table_loading"
+                        :basket="3" 
+                        :data="data_skki_basket_3" 
+                        @show_detail="detailSkki"
+                    />
+                    <div
+                        v-else
+                    >
+                        <p>Sedang memuat...</p>
+                    </div>
+                </v-card-text>
+            </v-card>
         </v-col>
         
         <material-list :is_show="material.is_show" :data="material.data" @hide_dialog="material.is_show = false"/>
@@ -80,6 +118,8 @@
             },
             table_loading: true,
             data_skki_basket_1: [],
+            data_skki_basket_2: [],
+            data_skki_basket_3: [],
 
             material: {
             is_show: false,
@@ -134,7 +174,26 @@
             loadData() {
                 this.$axios.get('/skkis')
                     .then(res => {
+                        // sum jasa material
+                        res.data.data.forEach(el => {
+                            let sum_jasa = 0;
+                            let sum_material = 0;
+                            
+                            el.jasas.forEach(el => {
+                                sum_jasa += el.harga
+                            })
+                            el.materials.forEach(el => {
+                                sum_material += el.harga * el.jumlah
+                            })
+
+                            el.jasas_sum = sum_jasa;
+                            el.materials_sum = sum_material;
+                        })
+
                         this.data_skki_basket_1 = res.data.data.filter(item => item.basket == 1)
+                        this.data_skki_basket_2 = res.data.data.filter(item => item.basket == 2)
+                        this.data_skki_basket_3 = res.data.data.filter(item => item.basket == 3)
+                        
                         this.table_loading = false
                     })
             },

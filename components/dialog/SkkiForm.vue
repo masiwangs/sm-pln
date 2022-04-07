@@ -367,6 +367,13 @@ export default {
         deleteSkki() {
             this.$axios.delete('/skkis/'+this.new_skki.id)
                 .then(res => {
+                    this.new_skki.id = '';
+                    this.new_skki.last_modified = '';
+                    this.new_skki.prks = [];
+                    this.new_skki.nomor_skki = '';
+                    this.new_skki.nomor_prk_skki = '';
+                    this.new_skki.nomor_wbs_jasa = '';
+                    this.new_skki.nomor_wbs_material = '';
                     this.$emit('reload_data')
                     this.$emit('hide_dialog')
                 })

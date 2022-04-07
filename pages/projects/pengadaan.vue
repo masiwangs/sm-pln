@@ -9,29 +9,53 @@
     </v-col>
 
     <v-col cols="12">
-      <basket-card tahap="pengadaan" :basket="1" @show_material="showMaterial" @show_jasa="showJasa" @new_project="newProject"/>
+      <v-card elevation="0" class="rounded-lg">
+                <v-card-title class="d-flex justify-space-between">
+                    <div>Basket 1</div>
+                    <v-btn elevation="0" class="rounded-lg" v-on:click="create(1)" color="primary"><v-icon class="mr-2">mdi-plus-box</v-icon> Baru</v-btn>
+                </v-card-title>
+                <v-divider class="mx-4"></v-divider>
+                <v-card-text>
+                    <pengadaan-table 
+                        v-if="!table_loading"
+                        :basket="1" 
+                        :data="data_basket_1" 
+                        @show_detail="detail"
+                    />
+                    <div
+                        v-else
+                    >
+                        <p>Sedang memuat...</p>
+                    </div>
+                </v-card-text>
+            </v-card>
     </v-col>
     <v-col cols="12">
-      <basket-card tahap="pengadaan" :basket="2" @show_material="showMaterial" @show_jasa="showJasa" @new_project="newProject"/>
+      <!-- <basket-card tahap="pengadaan" :basket="2" @show_material="showMaterial" @show_jasa="showJasa" @new_project="newProject"/> -->
     </v-col>
     <v-col cols="12">
-      <basket-card tahap="pengadaan" :basket="3" @show_material="showMaterial" @show_jasa="showJasa" @new_project="newProject"/>
+      <!-- <basket-card tahap="pengadaan" :basket="3" @show_material="showMaterial" @show_jasa="showJasa" @new_project="newProject"/> -->
     </v-col>
     
-    <material-list :is_show="material.is_show" :data="material.data" @hide_dialog="material.is_show = false"/>
-    <jasa-list :is_show="jasa.is_show" :data="jasa.data" @hide_dialog="jasa.is_show = false"/>
-    <pengadaan-form ref="formSkki" :is_show="new_project.is_show" :basket="new_project.basket" @hide_dialog="new_project.is_show = false"/>
+    <pengadaan-form 
+        :is_show="form.is_show" 
+        :basket="form.basket" 
+        :data="form.data"
+        :skkis="form.skkis"
+        @hide_dialog="form.is_show = false"
+        @reload_data="load()"/>
   </v-row>
 </template>
 
 <script>
-  import BasketCard from '~/components/card/BasketCard.vue'
-  import MaterialList from '~/components/dialog/MaterialList.vue'
-  import JasaList from '~/components/dialog/JasaList.vue'
-  import PengadaanForm from '~/components/dialog/PengadaanForm.vue'
+    import BasketCard from '~/components/card/BasketCard.vue'
+    import MaterialList from '~/components/dialog/MaterialList.vue'
+    import JasaList from '~/components/dialog/JasaList.vue'
+    import PengadaanForm from '~/components/dialog/PengadaanForm.vue'
+    import PengadaanTable from '~/components/table/PengadaanTable.vue'
 
   export default {
-    components: {BasketCard, MaterialList, JasaList, PengadaanForm},
+    components: {BasketCard, MaterialList, JasaList, PengadaanForm, PengadaanTable},
     data() {
       return {
         breadcrumbItems: [{
@@ -44,6 +68,14 @@
             active: false,
           },
         ],
+        form:{
+            is_show: false,
+            basket: '',
+            data: '',
+            skkis: []
+        },
+        data_basket_1: [],
+        table_loading: true,
 
         material: {
           is_show: false,
@@ -92,6 +124,22 @@
       }
     },
     methods: {
+        load(){
+
+        },
+        create(basket){
+            this.$axios.get('/skkis')
+                .then(res => {
+                    this.form.skkis = res.data.data;
+                    this.form.basket = basket;
+                })
+                .then(() => {
+                    this.form.is_show = true
+                })
+        },
+        detail(){
+
+        },
       showMaterial(data) {
         this.material.data = data
         this.material.is_show = true
