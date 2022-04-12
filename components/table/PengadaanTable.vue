@@ -1,47 +1,82 @@
 <template>
+<div>
+    <v-text-field
+        v-model="search"
+        append-icon="mdi-magnify"
+        placeholder="Cari"
+        filled
+        rounded
+        dense
+        :hide-details="true"
+        style="max-width: 20rem"
+        class="mb-3"
+    ></v-text-field>
     <v-data-table 
         :headers="tbl_header" 
-        :items="tbl_items" 
+        :items="data" 
         :items-per-page="5" 
         item-key="id"
+        :search="search"
         class="elevation-0 mb-4"
     >
+        <template v-slot:item.nodin="{ item }">
+            <a 
+                href="javascript:void(0)"
+                @click="$emit('show_detail', item)"
+            >{{ item.nodin ? item.nodin : 'Untitled' }}</a>
+        </template>
+        
+        <template v-slot:item.jasas_sum="{ item }">
+            Rp{{ new Intl.NumberFormat('id-ID').format(item.jasas_sum) }}
+        </template>
+
+        <template v-slot:item.materials_sum="{ item }">
+            Rp{{ new Intl.NumberFormat('id-ID').format(item.materials_sum) }}
+        </template>
     </v-data-table>
+</div>
 </template>
 
 <script>
 export default {
+    props: ['data'],
     data() {
         return {
-        tbl_header: [
-            {
-                text: 'Nodin',
-                value: 'nodin'
-            },
-            {
-                text: 'Tgl. Nodin',
-                value: 'tgl_nodin'
-            },
-            {
-                text: 'Nama Project',
-                value: 'nama'
-            },
-            {
-                text: 'RAB Jasa',
-                value: 'rab_jasa'
-            },
-            {
-                text: 'RAB Material',
-                value: 'rab_material'
-            },
-            {
-                text: 'Status',
-                value: 'status'
-            },
-        ],
-        tbl_items: []
+            search: '',
+            tbl_header: [
+                {
+                    text: 'Nodin',
+                    value: 'nodin'
+                },
+                {
+                    text: 'Tgl. Nodin',
+                    value: 'tanggal_nodin'
+                },
+                {
+                    text: 'Nama Project',
+                    value: 'nama_project'
+                },
+                {
+                    text: 'RAB Jasa (Rp)',
+                    value: 'jasas_sum'
+                },
+                {
+                    text: 'RAB Material (Rp)',
+                    value: 'materials_sum'
+                },
+                {
+                    text: 'Status',
+                    value: 'status'
+                },
+            ],
         }
-  },
+    },
+    
+    watch: {
+        data(val) {
+            console.log(val)
+        }
+    }
 }
 </script>
 

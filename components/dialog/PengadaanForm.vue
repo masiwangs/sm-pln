@@ -19,7 +19,7 @@
                                 small
                                 dark
                                 color="green accent-1"
-                                class="green-text"
+                                class="green--text"
                             >
                                 Terakhir disimpan: {{ (new Date(form.last_modified)).toLocaleString('id-ID') }}
                             </v-chip>
@@ -49,7 +49,7 @@
                                         rounded
                                         dense
                                         :hide-details="true"
-                                        v-model="form.prk_skkis"
+                                        v-model="form.nomor_prk_skkis"
                                         @change="save()"
                                     ></v-select>
                                 </v-col>
@@ -58,7 +58,7 @@
                                 <v-col
                                     cols="12"
                                     md="6"
-                                    lg="3"
+                                    lg="4"
                                     class="pt-0"
                                 >
                                     <label for="">Nodin</label>
@@ -77,7 +77,27 @@
                                 <v-col
                                     cols="12"
                                     md="6"
-                                    lg="3"
+                                    lg="4"
+                                    class="pt-0"
+                                >
+                                    <label for="">Tanggal Nodin</label>
+                                    <v-text-field
+                                        filled
+                                        rounded
+                                        dense
+                                        v-model="form.tanggal_nodin"
+                                        :hide-details="true"
+                                        placeholder="Pilih tanggal nodin"
+                                        type="date"
+                                        @change="save()"
+                                    ></v-text-field>
+                                </v-col>
+                            </v-row>
+                            <v-row>
+                                <v-col
+                                    cols="12"
+                                    md="6"
+                                    lg="4"
                                     class="pt-0"
                                 >
                                     <label for="">Nomor PR</label>
@@ -96,7 +116,7 @@
                                 <v-col
                                     cols="12"
                                     md="6"
-                                    lg="3"
+                                    lg="4"
                                     class="pt-0"
                                 >
                                     <label for="">Nama Project</label>
@@ -115,47 +135,7 @@
                                 <v-col
                                     cols="12"
                                     md="6"
-                                    lg="3"
-                                    class="pt-0"
-                                >
-                                    <label for="">Tanggal Awal</label>
-                                    <v-text-field
-                                        filled
-                                        rounded
-                                        dense
-                                        v-model="form.tanggal_awal"
-                                        :hide-details="true"
-                                        placeholder="Pilih tanggal awal"
-                                        type="date"
-                                        @change="save()"
-                                    ></v-text-field>
-                                </v-col>
-                            </v-row>
-                            <v-row>
-                                <v-col
-                                    cols="12"
-                                    md="6"
-                                    lg="3"
-                                    class="pt-0"
-                                >
-                                    <label for="">Tanggal Akhir</label>
-                                    <v-text-field
-                                        filled
-                                        rounded
-                                        dense
-                                        v-model="form.tanggal_akhir"
-                                        :hide-details="true"
-                                        placeholder="Pilih tanggal akhir"
-                                        type="date"
-                                        @change="save()"
-                                    ></v-text-field>
-                                </v-col>
-                            </v-row>
-                            <v-row>
-                                <v-col
-                                    cols="12"
-                                    md="6"
-                                    lg="3"
+                                    lg="4"
                                     class="pt-0"
                                 >
                                     <label for="">Status</label>
@@ -167,10 +147,155 @@
                                         :hide-details="true"
                                         placeholder="Pilih tanggal akhir"
                                         :items="['Proses', 'Terkontrak']"
-                                        @change="checkStatus()"
+                                        @change="changeStatus()"
                                     ></v-select>
                                 </v-col>
                             </v-row>
+                            <v-card 
+                                class="mt-4"
+                                v-show="kontrak.is_show"
+                            >
+                                <v-card-title>Detail kontrak</v-card-title>
+                                <v-card-text>
+                                    <v-row>
+                                        <v-col
+                                            cols="12"
+                                            md="6"
+                                            lg="4"
+                                            class="pt-0"
+                                        >
+                                            <label for="">Nomor Kontrak</label>
+                                            <v-text-field
+                                                filled
+                                                rounded
+                                                dense
+                                                :hide-details="true"
+                                                placeholder="Masukkan nomor kontrak"
+                                            ></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col
+                                            cols="12"
+                                            md="6"
+                                            lg="4"
+                                            class="pt-0"
+                                        >
+                                            <label for="">Tanggal Kontrak</label>
+                                            <v-text-field
+                                                filled
+                                                rounded
+                                                dense
+                                                :hide-details="true"
+                                                v-model="kontrak.tanggal_kontrak"
+                                                type="date"
+                                                placeholder="Pilih tanggal kontrak"
+                                            ></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col
+                                            cols="12"
+                                            md="6"
+                                            lg="4"
+                                            class="pt-0"
+                                        >
+                                            <label for="">Tanggal Awal</label>
+                                            <v-text-field
+                                                filled
+                                                rounded
+                                                dense
+                                                v-model="kontrak.tanggal_awal"
+                                                :hide-details="true"
+                                                placeholder="Pilih tanggal awal"
+                                                type="date"
+                                            ></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col
+                                            cols="12"
+                                            md="6"
+                                            lg="4"
+                                            class="pt-0"
+                                        >
+                                            <label for="">Tanggal Akhir</label>
+                                            <v-text-field
+                                                filled
+                                                rounded
+                                                dense
+                                                v-model="kontrak.tanggal_akhir"
+                                                :hide-details="true"
+                                                placeholder="Pilih tanggal akhir"
+                                                type="date"
+                                            ></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col
+                                            cols="12"
+                                            md="6"
+                                            lg="4"
+                                            class="pt-0"
+                                        >
+                                            <label for="">Pelaksana</label>
+                                            <v-text-field
+                                                filled
+                                                rounded
+                                                dense
+                                                v-model="kontrak.pelaksana"
+                                                :hide-details="true"
+                                                placeholder="Masukkan pelaksana"
+                                            ></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row class="mb-4">
+                                        <v-col
+                                            cols="12"
+                                            md="6"
+                                            lg="4"
+                                            class="pt-0"
+                                        >
+                                            <label for="">Direksi Pekerjaan</label>
+                                            <v-text-field
+                                                filled
+                                                rounded
+                                                dense
+                                                v-model="kontrak.direksi_pekerjaan"
+                                                :hide-details="true"
+                                                placeholder="Masukkan direksi pekerjaan"
+                                            ></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                    <v-alert
+                                        dense
+                                        type="info"
+                                        class="mt-4"
+                                        border="left"
+                                        colored-border
+                                    >
+                                    <small>
+                                        Lengkapi informasi di atas untuk mengubah <strong>status pengadaan</strong> mejadi <strong><q>Terkontrak</q></strong>.
+                                    </small>
+                                    </v-alert>
+                                    <div class="text-right mt-4">
+                                        <v-btn
+                                            elevation="0"
+                                            class="rounded-lg mr-2"
+                                            dark
+                                            color="red"
+                                            @click="hideKontrak()"
+                                        >Batal</v-btn>
+                                        <v-btn
+                                            elevation="0"
+                                            class="rounded-lg"
+                                            dark
+                                            color="indigo accent-2"
+                                            @click="saveKontrak()"
+                                        >Simpan</v-btn>
+                                    </div>
+                                </v-card-text>
+                            </v-card>
                         </v-col>
                     </v-row>
                     <!-- informasi project end -->
@@ -182,16 +307,18 @@
                         </v-col>
                         <v-col cols="12">
                             <v-row>
-                                <v-col cols="12" md="6" lg="3" class="pb-0">
+                                <v-col cols="12" md="6" lg="4" class="pb-0">
                                     <label for="">Nomor WBS Jasa</label>
                                     <v-select
                                         :items="form.wbs_jasas_option"
                                         placeholder="Pilih PKR"
                                         filled
                                         rounded
+                                        multiple
                                         :hide-details="true"
                                         dense
-                                        v-model="form.wbs_jasas"
+                                        @change="save()"
+                                        v-model="form.nomor_wbs_jasas"
                                     ></v-select>
                                 </v-col>
                             </v-row>
@@ -203,18 +330,13 @@
                                         <tr>
                                             <th class="text-left">Jasa</th>
                                             <th class="text-left">Nilai</th>
-                                            <th class="text-left" width="10%">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr v-for="item in jasas" :key="item.id">
                                             <td>{{ item.nama_jasa }}</td>
                                             <td>Rp{{ new Intl.NumberFormat('id-ID').format(item.harga) }},-</td>
-                                            <td>
-                                                <v-btn icon color="text--red" class="elevation-0" @click="deleteJasa(item.id)">
-                                                    <v-icon color="red">mdi-delete</v-icon>
-                                                </v-btn>
-                                            </td>
+                                            
                                         </tr>
                                     </tbody>
                                 </template>
@@ -230,7 +352,7 @@
                         </v-col>
                         <v-col cols="12">
                             <v-row>
-                                <v-col cols="12" md="6" lg="3" class="pb-0">
+                                <v-col cols="12" md="6" lg="4" class="pb-0">
                                     <label for="">Nomor WBS Material</label>
                                     <v-select
                                         :items="form.wbs_materials_option"
@@ -238,8 +360,10 @@
                                         filled
                                         rounded
                                         dense
+                                        multiple
                                         :hide-details="true"
-                                        v-model="form.wbs_materials"
+                                        @change="save()"
+                                        v-model="form.nomor_wbs_materials"
                                     ></v-select>
                                 </v-col>
                             </v-row>
@@ -254,7 +378,6 @@
                                             <th class="text-left">Jumlah</th>
                                             <th class="text-left">Satuan</th>
                                             <th class="text-left">Harga</th>
-                                            <th class="text-left" width="10%">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -263,12 +386,8 @@
                                             <td>{{ item.nama_material }}</td>
                                             <td>{{ item.jumlah }}</td>
                                             <td>{{ item.satuan }}</td>
-                                            <td>{{ item.harga }}</td>
-                                            <td>
-                                                <v-btn icon color="text--red" class="elevation-0" @click="deleteMaterial(item.id)">
-                                                    <v-icon color="red">mdi-delete</v-icon>
-                                                </v-btn>
-                                            </td>
+                                            <td>Rp{{ new Intl.NumberFormat('id-ID').format(item.harga) }},-/{{ item.satuan }}</td>
+                                            
                                         </tr>
                                     </tbody>
                                 </template>
@@ -329,7 +448,7 @@
                                                 color="red"
                                                 elevation="0"
                                                 class="rounded-lg"
-                                                @click="deleteSkki()"
+                                                @click="remove()"
                                             >Buang</v-btn>
                                         </div>
                                     </v-container>
@@ -341,7 +460,7 @@
                             elevation="0" 
                             dark 
                             color="indigo accent-2"
-                            @click="doneEditingSKKI()"
+                            @click="done()"
                         >Selesai</v-btn>
                     </div>
                 </v-container>
@@ -354,24 +473,23 @@
 import DatePicker from './DatePicker.vue'
 export default {
     components: { DatePicker },
-    props: ['is_show', 'basket', 'skkis'],
+    props: ['is_show', 'basket', 'skkis', 'data'],
     data() {
         return {
-            skkis: [],
             form: {
+                id: '',
                 basket: '',
                 last_modified: '',
-                prk_skkis: '',
+                prk_skkis: [],
                 nodin: '',
+                tanggal_nodin: '',
                 nomor_pr: '',
                 nama_project: '',
-                tanggal_awal: '',
-                tanggal_akhir: '',
                 status: '',
                 wbs_jasas: '',
                 wbs_materials: '',
                 wbs_jasas_option: [],
-                wbs_materials_option: []
+                wbs_materials_option: [],
             },
             date_picker: {
                 is_show: false,
@@ -379,6 +497,17 @@ export default {
             },
             jasas: [],
             materials: [],
+            kontrak: {
+                is_show: false,
+                nomor_kontrak: '',
+                tanggal_kontrak: '',
+                tanggal_awal: '',
+                tanggal_akhir: '',
+                pelaksana: '',
+                direksi_pekerjaan: '',
+                success: false
+            },
+
             remove_dialog: {
                 is_show: false
             },
@@ -405,56 +534,175 @@ export default {
                 satuan: '',
                 harga: ''
             },
-            jasa: [],
-            material: [],
             dummy_prk: [
                 'PRK1', 'PRK2', 'PRK3', 'PRK4', 'PRK5', 'PRK6', 'PRK7', 'PRK8', 'PRK9',
             ]
         }
     },
     methods: {
-        openDatePicker(tgl) {
-            console.log(tgl)
-            this.date_picker.tgl = tgl;
-            this.date_picker.is_show = true
+        done() {
+            this.form = {
+                id: '',
+                basket: '',
+                last_modified: '',
+                nomor_prk_skkis: [],
+                nodin: '',
+                tanggal_nodin: '',
+                nomor_pr: '',
+                nama_project: '',
+                tanggal_awal: '',
+                tanggal_akhir: '',
+                status: '',
+                nomor_wbs_jasas: [],
+                nomor_wbs_materials: [],
+                wbs_jasas_option: [],
+                wbs_materials_option: []
+            }
+            this.$emit('reload_data')
+            this.$emit('hide_dialog')
         },
-        saveDate(date) {
-            if(this.date_picker.tgl == 'awal') {
-                this.form.tanggal_awal = date
+        save(with_status = false){
+            // clean array
+            let nomor_prk_skkis = this.form.nomor_prk_skkis.filter(el => { if(el.length) { return el }})
+            let nomor_wbs_jasas = this.form.nomor_wbs_jasas.filter(el => { if(el.length) { return el } })
+            let nomor_wbs_materials = this.form.nomor_wbs_materials.filter(el => { if(el.length) { return el } })
+            
+            let form_data = new FormData();
+            form_data.append('nomor_prk_skkis', JSON.stringify(nomor_prk_skkis));
+            form_data.append('nodin', this.form.nodin);
+            form_data.append('tanggal_nodin', this.form.tanggal_nodin);
+            form_data.append('nomor_pr', this.form.nomor_pr);
+            form_data.append('nama_project', this.form.nama_project);
+            form_data.append('nomor_wbs_jasas', JSON.stringify(nomor_wbs_jasas));
+            form_data.append('nomor_wbs_materials', JSON.stringify(nomor_wbs_materials));
+            form_data.append('basket', this.form.basket);
+
+            if(with_status) {
+                form_data.append('status', this.form.status);
+            }
+
+            let is_filled = this.form.nomor_prk_skkis.length || this.form.nodin || this.form.tanggal_nodin || this.form.nomor_pr || this.form.nama_project || this.form.tanggal_awal || this.form.tanggal_akhir || this.form.nomor_wbs_jasas.length || this.form.nomor_wbs_materials.length;
+
+            if(this.form.id && is_filled) {
+                this.$axios.post('/pengadaans/'+this.form.id, form_data)
+                    .then(res => {
+                        this.form.last_modified = res.data.data.updated_at;
+                        this.loadJasa();
+                        this.loadMaterial();
+                        this.loadWbsOption();
+                    })
             } else {
-                this.form.tanggal_akhir = date
+                this.$axios.post('/pengadaans', form_data)
+                    .then(res => {
+                        this.form.id = res.data.data.id;
+                        this.form.last_modified = res.data.data.updated_at;
+                        this.loadJasa();
+                        this.loadMaterial();
+                        this.loadWbsOption();
+                    })
             }
         },
-        justLog() {
-            console.log('log aja brou')
-        },
-        saveJasa() {
-            this.jasa.push(this.new_jasa)
-            this.new_jasa = {
-                nama: '',
-                nilai: ''
+        changeStatus() {
+            if(this.form.status.toLowerCase() == 'terkontrak') {
+                this.kontrak.is_show = true;
+            } else {
+                this.save(true)
             }
         },
-        saveMaterial() {
-            this.material.push(this.new_material);
-            this.new_material = {
-                normalisasi: '',
-                nama: '',
-                jumlah: '',
-                satuan: '',
-                harga: ''
+        hideKontrak() {
+            this.kontrak = {
+                is_show: false,
+                nomor_kontrak: '',
+                tanggal_kontrak: '',
+                tanggal_awal: '',
+                tanggal_akhir: '',
+                pelaksana: '',
+                direksi_pekerjaan: '',
+                success: false
             }
+            this.form.status = '';
         },
-        deleteJasa(index) {
-            this.jasa.splice(index, 1)
+        saveKontrak() {
+            this.$axios.post('/kontraks')
+                .then(res => {
+
+                })
         },
-        deleteMaterial(index) {
-            this.material.splice(index, 1)
+        loadJasa() {
+            this.$axios.get('/pengadaans/'+this.form.id+'/jasas')
+                .then(res => {
+                    this.jasas = res.data.data
+                    console.log(this.jasas)
+                })
+        },
+        loadMaterial() {
+            this.$axios.get('/pengadaans/'+this.form.id+'/materials')
+                .then(res => {
+                    this.materials = res.data.data
+                    console.log(this.materials)
+                })
+        },
+        loadWbsOption() {
+            this.$axios.get('/pengadaans/'+this.form.id+'/prk_skkis')
+                .then(res => {
+                    this.form.wbs_jasas_option = res.data.data.map((skki) => skki.nomor_wbs_jasa)
+                    this.form.wbs_materials_option = res.data.data.map((skki) => skki.nomor_wbs_material)
+                })
+        },
+        remove() {
+            this.$axios.delete('/pengadaans/'+this.form.id)
+                .then(res => {
+                    this.form = {
+                        id: '',
+                        basket: '',
+                        last_modified: '',
+                        nomor_prk_skkis: [],
+                        nodin: '',
+                        tanggal_nodin: '',
+                        nomor_pr: '',
+                        nama_project: '',
+                        tanggal_awal: '',
+                        tanggal_akhir: '',
+                        status: '',
+                        nomor_wbs_jasas: [],
+                        nomor_wbs_materials: [],
+                        wbs_jasas_option: [],
+                        wbs_materials_option: []
+                    }
+                    this.kontrak = {
+                        is_show: false,
+                        nomor_kontrak: '',
+                        tanggal_kontrak: '',
+                        tanggal_awal: '',
+                        tanggal_akhir: '',
+                        pelaksana: '',
+                        direksi_pekerjaan: ''
+                    }
+                    this.$emit('reload_data')
+                    this.$emit('hide_dialog')
+                })
+                
         }
     },
     watch: {
         data(data) {
             this.form.basket = data.basket;
+            this.form.id = data.id;
+            this.form.basket = data.basket;
+            this.form.last_modified = data.updated_at;
+            this.form.nomor_prk_skkis = data.nomor_prk_skkis ? JSON.parse(data.nomor_prk_skkis) : [];
+            this.form.nodin = data.nodin;
+            this.form.tanggal_nodin = data.tanggal_nodin;
+            this.form.nomor_pr = data.nomor_pr;
+            this.form.nama_project = data.nama_project;
+
+            this.form.status = data.status;
+            this.form.nomor_wbs_jasas = data.nomor_wbs_jasas ? JSON.parse(data.nomor_wbs_jasas) : [];
+            this.form.nomor_wbs_materials = data.nomor_wbs_materials ? JSON.parse(data.nomor_wbs_materials) : [];
+            this.jasas = data.jasas;
+            this.materials = data.materials;
+
+            this.loadWbsOption()
         }
     }
 }
