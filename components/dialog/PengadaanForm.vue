@@ -145,8 +145,8 @@
                                         dense
                                         v-model="form.status"
                                         :hide-details="true"
-                                        placeholder="Pilih tanggal akhir"
-                                        :items="['Proses', 'Terkontrak']"
+                                        placeholder="Pilih status pengadaan"
+                                        :items="['proses', 'terkontrak']"
                                         @change="changeStatus()"
                                     ></v-select>
                                 </v-col>
@@ -480,14 +480,14 @@ export default {
                 id: '',
                 basket: '',
                 last_modified: '',
-                prk_skkis: [],
+                nomor_prk_skkis: [],
                 nodin: '',
                 tanggal_nodin: '',
                 nomor_pr: '',
                 nama_project: '',
                 status: '',
-                wbs_jasas: '',
-                wbs_materials: '',
+                nomor_wbs_jasas: [],
+                nomor_wbs_materials: [],
                 wbs_jasas_option: [],
                 wbs_materials_option: [],
             },
@@ -586,6 +586,7 @@ export default {
             if(this.form.id && is_filled) {
                 this.$axios.post('/pengadaans/'+this.form.id, form_data)
                     .then(res => {
+                        console.log(res.data.data)
                         this.form.last_modified = res.data.data.updated_at;
                         this.loadJasa();
                         this.loadMaterial();
@@ -594,8 +595,11 @@ export default {
             } else {
                 this.$axios.post('/pengadaans', form_data)
                     .then(res => {
+                        console.log(res.data.data)
                         this.form.id = res.data.data.id;
                         this.form.last_modified = res.data.data.updated_at;
+                        this.form.nomor_wbs_jasas = JSON.parse(res.data.data.nomor_wbs_jasas)
+                        this.form.nomor_wbs_materials = JSON.parse(res.data.data.nomor_wbs_materials)
                         this.loadJasa();
                         this.loadMaterial();
                         this.loadWbsOption();
@@ -701,6 +705,8 @@ export default {
             this.form.nomor_wbs_materials = data.nomor_wbs_materials ? JSON.parse(data.nomor_wbs_materials) : [];
             this.jasas = data.jasas;
             this.materials = data.materials;
+
+            console.log('opened form', data)
 
             this.loadWbsOption()
         }
