@@ -21,11 +21,11 @@
         class="elevation-0 mb-4"
     >
         <template v-slot:item.nomor_skki="{ item }">
-            <a 
-                href="javascript:void(0)"
+            <nuxt-link
+                :to="'/projects/skki/'+item.id"
                 style="text-decoration: none"
                 @click="$emit('show_detail', item)"
-            >{{ item.nomor_skki ? item.nomor_skki : 'Untitled' }}</a>
+            >{{ item.nomor_skki ? item.nomor_skki : 'Untitled' }}</nuxt-link>
         </template>
         <template v-slot:item.jasas_sum="{ item }">
             Rp{{ new Intl.NumberFormat('id-ID').format(item.jasas_sum) }}

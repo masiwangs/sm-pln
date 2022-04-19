@@ -1,53 +1,69 @@
 <template>
     <div>
-        <v-simple-table>
-            <template v-slot:default>
-                <thead>
-                    <tr>
-                        <th>Nomor Kontrak</th>
-                        <th>Nama Project</th>
-                        <th>Tgl Awal</th>
-                        <th>Tgl Akhir</th>
-                        <th>Pelaksana</th>
-                        <th>Direksi</th>
-                        <th>RAB Jasa</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><a href="#" @click="showDetail">KTR12</a></td>
-                        <td>ABC</td>
-                        <td>2022-04-01</td>
-                        <td>2022-05-01</td>
-                        <td>PT XYZ</td>
-                        <td>DEF</td>
-                        <td>Rp{{ new Intl.NumberFormat('id-ID').format(2000000) }}</td>
-                    </tr>
-                </tbody>
+        <v-text-field
+            v-model="search"
+            append-icon="mdi-magnify"
+            placeholder="Cari"
+            filled
+            rounded
+            dense
+            :hide-details="true"
+            style="max-width: 20rem"
+            class="mb-3"
+        ></v-text-field>
+        <v-data-table
+            :headers="tbl_header"
+            :items="data"
+            :items-per-page="5"
+            item-key="id"
+            :search="search"
+            class="elevstion-0 mb-4"
+        >
+            <template v-slot:item.nomor_kontrak="{ item }">
+                <nuxt-link
+                    :to="'/projects/kontrak/'+item.id"
+                >
+                    {{ item.nomor_kontrak }}
+                </nuxt-link>
             </template>
-        </v-simple-table>
-
-        <kontrak-form :is_show="detail.is_show" @hide_dialog="detail.is_show = false"/>
+        </v-data-table>
     </div>
 </template>
 
 <script>
-import KontrakForm from '../dialog/KontrakForm.vue'
 export default {
     props: ['data'],
-    components: { KontrakForm },
     data() {
         return {
-            detail: {
-                is_show: false
-            }
+            search: '',
+            tbl_header: [
+                {
+                    text: 'Nomor Kontrak',
+                    value: 'nomor_kontrak'
+                }, 
+                {
+                    text: 'Tanggal Kontrak',
+                    value: 'tanggal_kontrak'
+                },
+                {
+                    text: 'Tanggal Awal',
+                    value: 'tanggal_awal'
+                },
+                {
+                    text: 'Tanggal Akhir',
+                    value: 'tanggal_akhir'
+                },
+                {
+                    text: 'Pelaksana',
+                    value: 'pelaksana'
+                },
+                {
+                    text: 'Direksi',
+                    value: 'direksi_pelaksana'
+                }
+            ]
         }
     },
-    methods: {
-        showDetail() {
-            this.detail.is_show = true
-        }
-    }
 }
 </script>
 

@@ -171,6 +171,7 @@
                                                 dense
                                                 :hide-details="true"
                                                 placeholder="Masukkan nomor kontrak"
+                                                v-model="kontrak.nomor_kontrak"
                                             ></v-text-field>
                                         </v-col>
                                     </v-row>
@@ -256,29 +257,47 @@
                                             lg="4"
                                             class="pt-0"
                                         >
-                                            <label for="">Direksi Pekerjaan</label>
+                                            <label for="">Direksi Pelaksana</label>
                                             <v-text-field
                                                 filled
                                                 rounded
                                                 dense
-                                                v-model="kontrak.direksi_pekerjaan"
+                                                v-model="kontrak.direksi_pelaksana"
                                                 :hide-details="true"
-                                                placeholder="Masukkan direksi pekerjaan"
+                                                placeholder="Masukkan direksi pelaksana"
                                             ></v-text-field>
                                         </v-col>
                                     </v-row>
-                                    <v-alert
-                                        dense
-                                        type="info"
-                                        class="mt-4"
-                                        border="left"
-                                        colored-border
+                                    <div>
+                                        <v-alert
+                                            v-if="!kontrak.success"
+                                            dense
+                                            type="info"
+                                            class="mt-4"
+                                            border="left"
+                                            colored-border
+                                        >
+                                            <small>
+                                                Lengkapi informasi di atas untuk mengubah <strong>status pengadaan</strong> mejadi <strong><q>Terkontrak</q></strong>.
+                                            </small>
+                                        </v-alert>
+                                        <v-alert
+                                            v-if="kontrak.success"
+                                            dense
+                                            type="success"
+                                            class="mt-4"
+                                            border="left"
+                                            colored-border
+                                        >
+                                            <small>
+                                                Sukses! Tersimpan di tahap <strong><q>Terkontrak</q></strong>.
+                                            </small>
+                                        </v-alert>
+                                    </div>
+                                    <div 
+                                        v-if="!kontrak.success"
+                                        class="text-right mt-4"
                                     >
-                                    <small>
-                                        Lengkapi informasi di atas untuk mengubah <strong>status pengadaan</strong> mejadi <strong><q>Terkontrak</q></strong>.
-                                    </small>
-                                    </v-alert>
-                                    <div class="text-right mt-4">
                                         <v-btn
                                             elevation="0"
                                             class="rounded-lg mr-2"
@@ -558,6 +577,16 @@ export default {
                 wbs_jasas_option: [],
                 wbs_materials_option: []
             }
+            this.kontrak = {
+                is_show: false,
+                nomor_kontrak: '',
+                tanggal_kontrak: '',
+                tanggal_awal: '',
+                tanggal_akhir: '',
+                pelaksana: '',
+                direksi_pelaksana: '',
+                success: false
+            }
             this.$emit('reload_data')
             this.$emit('hide_dialog')
         },
@@ -579,6 +608,18 @@ export default {
 
             if(with_status) {
                 form_data.append('status', this.form.status);
+                if(this.form.status == 'proses') {
+                    this.kontrak = {
+                        is_show: false,
+                        nomor_kontrak: '',
+                        tanggal_kontrak: '',
+                        tanggal_awal: '',
+                        tanggal_akhir: '',
+                        pelaksana: '',
+                        direksi_pelaksana: '',
+                        success: false
+                    }
+                }
             }
 
             let is_filled = this.form.nomor_prk_skkis.length || this.form.nodin || this.form.tanggal_nodin || this.form.nomor_pr || this.form.nama_project || this.form.tanggal_awal || this.form.tanggal_akhir || this.form.nomor_wbs_jasas.length || this.form.nomor_wbs_materials.length;
@@ -621,15 +662,25 @@ export default {
                 tanggal_awal: '',
                 tanggal_akhir: '',
                 pelaksana: '',
-                direksi_pekerjaan: '',
+                direksi_pelaksana: '',
                 success: false
             }
             this.form.status = '';
         },
         saveKontrak() {
-            this.$axios.post('/kontraks')
+            let form_data = new FormData();
+            form_data.append('nomor_kontrak', this.kontrak.nomor_kontrak);
+            form_data.append('tanggal_kontrak', this.kontrak.tanggal_kontrak);
+            form_data.append('tanggal_awal', this.kontrak.tanggal_awal);
+            form_data.append('tanggal_akhir', this.kontrak.tanggal_akhir);
+            form_data.append('pelaksana', this.kontrak.pelaksana);
+            form_data.append('direksi_pelaksana', this.kontrak.direksi_pelaksana);
+            form_data.append('pengadaan_id', this.form.id);
+            this.$axios.post('/kontraks', form_data)
                 .then(res => {
-
+                    if(res.status == 201) {
+                        this.kontrak.success = true;
+                    }
                 })
         },
         loadJasa() {

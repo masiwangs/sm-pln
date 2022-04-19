@@ -7,7 +7,10 @@
             class="elevation-0 mb-4"
         >
             <template v-slot:item.nama_project="{ item }">
-                <a href="javascript:void(0)" style="text-decoration:none" @click="$emit('show_detail', item)">{{ item.nama_project }}</a>
+                <nuxt-link 
+                    :to="'/projects/prk/'+item.id" 
+                    style="text-decoration:none" 
+                >{{ item.nama_project }}</nuxt-link>
             </template>
 
             <template v-slot:item.jasas_sum="{ item }">

@@ -171,8 +171,12 @@
         },
         methods: {
             newProject(basket) {
-                this.prk_form.basket = basket
-                this.prk_form.is_show = true
+                let form_data = new FormData();
+                form_data.append('basket', basket)
+                this.$axios.post('/prks', form_data)
+                    .then(res => {
+                        this.$router.push('/projects/prk/'+res.data.data.id)
+                    })
             },
             loadBasketData() {
                 this.$axios.get('/prks')

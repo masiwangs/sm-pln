@@ -31,7 +31,9 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    '~/plugins/apexchart.js'
+    '~/plugins/apexchart.js',
+    '~/plugins/vuemask.js',
+    '~/plugins/vuemoney.js',
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

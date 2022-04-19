@@ -1,81 +1,90 @@
 <template>
     <v-row>
         <v-col cols="12">
-        <v-breadcrumbs :items="breadcrumbItems" class="px-0"></v-breadcrumbs>
-        <div>
+          <v-breadcrumbs :items="breadcrumbItems" class="px-0"></v-breadcrumbs>
+          <div>
             <h4 style="margin-bottom: -.25rem" class="grey--text">List Project</h4>
-            <h2>Tahap Pengadaan</h2>
-        </div>
+            <h2>Tahap SKKI</h2>
+          </div>
         </v-col>
 
         <v-col cols="12">
             <v-card elevation="0" class="rounded-lg">
                 <v-card-title class="d-flex justify-space-between">
                     <div>Basket 1</div>
-                    <v-btn elevation="0" class="rounded-lg" v-on:click="create(1)" color="primary"><v-icon class="mr-2">mdi-plus-box</v-icon> Baru</v-btn>
+                    <v-btn elevation="0" class="rounded-lg" v-on:click="newSKKI(1)" color="primary"><v-icon class="mr-2">mdi-plus-box</v-icon> Baru</v-btn>
                 </v-card-title>
                 <v-divider class="mx-4"></v-divider>
                 <v-card-text>
-                    <pengadaan-table 
+                    <skki-table 
                         v-if="!table_loading"
                         :basket="1" 
-                        :data="data_basket_1" 
-                        @show_detail="detail"
+                        :data="data_skki_basket_1" 
+                        @show_detail="detailSkki"
                     />
-                    <div v-else >
+                    <div
+                        v-else
+                    >
                         <p>Sedang memuat...</p>
                     </div>
                 </v-card-text>
             </v-card>
         </v-col>
         <v-col cols="12">
-            <v-card elevation="0" class="rounded-lg">
+          <v-card elevation="0" class="rounded-lg">
                 <v-card-title class="d-flex justify-space-between">
                     <div>Basket 2</div>
-                    <v-btn elevation="0" class="rounded-lg" v-on:click="create(2)" color="primary"><v-icon class="mr-2">mdi-plus-box</v-icon> Baru</v-btn>
+                    <v-btn elevation="0" class="rounded-lg" v-on:click="newSKKI(2)" color="primary"><v-icon class="mr-2">mdi-plus-box</v-icon> Baru</v-btn>
                 </v-card-title>
                 <v-divider class="mx-4"></v-divider>
                 <v-card-text>
-                    <pengadaan-table 
+                    <skki-table 
                         v-if="!table_loading"
                         :basket="2" 
-                        :data="data_basket_2" 
-                        @show_detail="detail"
+                        :data="data_skki_basket_2" 
+                        @show_detail="detailSkki"
                     />
-                    <div v-else >
+                    <div
+                        v-else
+                    >
                         <p>Sedang memuat...</p>
                     </div>
                 </v-card-text>
             </v-card>
         </v-col>
         <v-col cols="12">
-            <v-card elevation="0" class="rounded-lg">
+          <v-card elevation="0" class="rounded-lg">
                 <v-card-title class="d-flex justify-space-between">
                     <div>Basket 3</div>
-                    <v-btn elevation="0" class="rounded-lg" v-on:click="create(3)" color="primary"><v-icon class="mr-2">mdi-plus-box</v-icon> Baru</v-btn>
+                    <v-btn elevation="0" class="rounded-lg" v-on:click="newSKKI(3)" color="primary"><v-icon class="mr-2">mdi-plus-box</v-icon> Baru</v-btn>
                 </v-card-title>
                 <v-divider class="mx-4"></v-divider>
                 <v-card-text>
-                    <pengadaan-table 
+                    <skki-table 
                         v-if="!table_loading"
                         :basket="3" 
-                        :data="data_basket_3" 
-                        @show_detail="detail"
+                        :data="data_skki_basket_3" 
+                        @show_detail="detailSkki"
                     />
-                    <div v-else >
+                    <div
+                        v-else
+                    >
                         <p>Sedang memuat...</p>
                     </div>
                 </v-card-text>
             </v-card>
         </v-col>
-    
-        <pengadaan-form 
-            :is_show="form.is_show" 
-            :basket="form.basket" 
-            :data="form.data"
-            :skkis="form.skkis"
-            @hide_dialog="form.is_show = false"
-            @reload_data="load()"/>
+        
+        <material-list :is_show="material.is_show" :data="material.data" @hide_dialog="material.is_show = false"/>
+        <jasa-list :is_show="jasa.is_show" :data="jasa.data" @hide_dialog="jasa.is_show = false"/>
+        <skki-form 
+            :is_show="skki_form.is_show" 
+            :basket="skki_form.basket"
+            :data="skki_form.data"
+            :prks="skki_form.prks"
+            @hide_dialog="skki_form.is_show = false"
+            @reload_data="loadData()"
+        />
     </v-row>
 </template>
 
@@ -83,11 +92,11 @@
     import BasketCard from '~/components/card/BasketCard.vue'
     import MaterialList from '~/components/dialog/MaterialList.vue'
     import JasaList from '~/components/dialog/JasaList.vue'
-    import PengadaanForm from '~/components/dialog/PengadaanForm.vue'
-    import PengadaanTable from '~/components/table/PengadaanTable.vue'
+    import SkkiForm from '~/components/dialog/SkkiForm.vue'
+    import SkkiTable from '~/components/table/SkkiTable.vue'
 
     export default {
-        components: {BasketCard, MaterialList, JasaList, PengadaanForm, PengadaanTable},
+        components: {BasketCard, MaterialList, JasaList, SkkiForm, SkkiTable},
         data() {
         return {
             breadcrumbItems: [
@@ -97,20 +106,20 @@
                     href: '/'
                 },
                 {
-                    text: 'Project Tahap Pengadaan',
+                    text: 'Project Tahap SKKI',
                     active: false,
                 },
             ],
-            form:{
+            skki_form: {
                 is_show: false,
                 basket: '',
                 data: '',
-                skkis: []
+                prks: []
             },
-            data_basket_1: [],
-            data_basket_2: [],
-            data_basket_3: [],
             table_loading: true,
+            data_skki_basket_1: [],
+            data_skki_basket_2: [],
+            data_skki_basket_3: [],
 
             material: {
             is_show: false,
@@ -159,71 +168,64 @@
         }
         },
         mounted() {
-            this.load();
+            this.loadData();
         },
         methods: {
-            load(){
-                this.data_basket = [];
-                this.$axios.get('/pengadaans')
+            loadData() {
+                this.$axios.get('/skkis')
                     .then(res => {
-                        // TODO: sum jasa dan material
+                        // sum jasa material
                         res.data.data.forEach(el => {
                             let sum_jasa = 0;
                             let sum_material = 0;
-
+                            
                             el.jasas.forEach(el => {
-                                sum_jasa += el.harga;
+                                sum_jasa += el.harga
                             })
-
                             el.materials.forEach(el => {
                                 sum_material += el.harga * el.jumlah
-                            });
+                            })
 
                             el.jasas_sum = sum_jasa;
                             el.materials_sum = sum_material;
                         })
+
+                        this.data_skki_basket_1 = res.data.data.filter(item => item.basket == 1)
+                        this.data_skki_basket_2 = res.data.data.filter(item => item.basket == 2)
+                        this.data_skki_basket_3 = res.data.data.filter(item => item.basket == 3)
                         
-                        this.data_basket_1 = res.data.data.filter(item => item.basket == 1);
-                        this.data_basket_2 = res.data.data.filter(item => item.basket == 2);
-                        this.data_basket_3 = res.data.data.filter(item => item.basket == 3);
-                    })
-                    .then(() => {
-                        this.table_loading = false;
+                        this.table_loading = false
                     })
             },
-            create(basket){
-                this.$axios.get('/skkis')
+            newSKKI(basket) {
+                let form_data = new FormData();
+                form_data.append('basket', basket)
+                this.$axios.post('/skkis')
                     .then(res => {
-                        this.form.skkis = res.data.data;
-                        this.form.basket = basket;
-                    })
-                    .then(() => {
-                        this.form.is_show = true
+                        this.$router.push('/projects/skki/'+res.data.data.id)
                     })
             },
-            detail(data){
-                this.$axios.get('/skkis')
+            detailSkki(data) {
+                this.$axios.get('/prks')
                     .then(res => {
-                        this.form.skkis = res.data.data;
-                        this.form.data = data;
-                    })
-                    .then(() => {
-                        this.form.is_show = true;
+                        this.skki_form.prks = res.data.data;
+                        this.skki_form.data = data;
+                        this.skki_form.is_show = true;
                     })
             },
-        showMaterial(data) {
-            this.material.data = data
-            this.material.is_show = true
-        },
-        showJasa(data) {
-            this.jasa.data = data
-            this.jasa.is_show = true
-        },
-        newProject(basket) {
-            this.new_project.basket = basket
-            this.new_project.is_show = true
-            this.$refs.formSkki.justLog()
-        },
+            showMaterial(data) {
+                this.material.data = data
+                this.material.is_show = true
+            },
+            showJasa(data) {
+                this.jasa.data = data
+                this.jasa.is_show = true
+            },
+            newProject(basket) {
+                this.new_project.basket = basket
+                this.new_project.is_show = true
+                this.$refs.formSkki.justLog()
+            },
 
 
 
@@ -274,7 +276,7 @@
             }, 1000);
         },
         },
-  }
+    }
 </script>
 
 <style>

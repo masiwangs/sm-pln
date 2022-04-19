@@ -20,10 +20,10 @@
         class="elevation-0 mb-4"
     >
         <template v-slot:item.nodin="{ item }">
-            <a 
-                href="javascript:void(0)"
+            <nuxt-link 
+                :to="'/projects/pengadaan/'+item.id"
                 @click="$emit('show_detail', item)"
-            >{{ item.nodin ? item.nodin : 'Untitled' }}</a>
+            >{{ item.nodin ? item.nodin : 'Untitled' }}</nuxt-link>
         </template>
         
         <template v-slot:item.jasas_sum="{ item }">
