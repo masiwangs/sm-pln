@@ -333,6 +333,10 @@ export default {
                     console.log('success')
                 })
         },
+        remove(){
+            this.$axios.delete('/kontraks/'+this.id)
+                .then(res => this.$router.push('/projects/kontrak'))
+        },
         closeAmandemen() {
             this.amandemen = {
                 is_show_dialog: false,

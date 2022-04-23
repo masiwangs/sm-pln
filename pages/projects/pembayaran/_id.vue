@@ -348,6 +348,10 @@ export default {
                         }
                     }
                 })
+        },
+        remove() {
+            this.$axios.delete('/pembayarans/'+this.id)
+                .then(res => this.$router.push('/projects/pembayaran'))
         }
     }
 }

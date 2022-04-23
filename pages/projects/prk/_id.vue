@@ -516,6 +516,31 @@
                 </v-card-text>
             </v-card>
         </v-dialog>
+
+        <v-dialog
+            v-model="error_remove_material_dialog.is_show"
+            max-width="400"
+        >
+            <v-card
+                class="rounded-lg"
+            >
+                <v-card-title>Gagal!</v-card-title>
+                <v-card-text>
+                    <p class="mb-4">{{ error_remove_material_dialog.message }}</p>
+                    <div
+                        class="text-right"
+                    >
+                        <v-btn
+                            dark
+                            elevation="0"
+                            class="rounded-lg mr-2"
+                            color="red"
+                            @click="error_remove_material_dialog.is_show = false"
+                        >Tutup</v-btn>
+                    </div>
+                </v-card-text>
+            </v-card>
+        </v-dialog>
     </v-row>
 </template>
 
@@ -576,6 +601,10 @@ export default {
             remove_dialog: {
                 is_show: false,
             },
+            error_remove_material_dialog: {
+                is_show: false,
+                message: ''
+            }
         }
     },
     mounted() {
@@ -587,7 +616,8 @@ export default {
             this.$axios.get('/prks/'+this.id)
                 .then(res => {
                     this.project = res.data.data;
-                    this.prioritas = res.data.data.prioritas;
+                    this.project.prioritas = parseInt(res.data.data.prioritas);
+                    this.prioritas = parseInt(res.data.data.prioritas);
                     this.jasas = res.data.data.jasas;
                     this.materials = res.data.data.materials;
                 })
@@ -637,7 +667,7 @@ export default {
                     this.new_jasa_dialog.is_show = false;
                 })
         },
-        deleteJasa() {
+        deleteJasa(id) {
             this.$axios.delete('/prks/'+this.id+'/jasas/'+id)
                 .then(res => {
                     this.loadJasa()
@@ -647,6 +677,16 @@ export default {
             this.$axios.delete('/prks/'+this.id+'/materials/'+id)
                 .then(res => {
                     this.loadMaterial()
+                })
+                .catch(e => {
+                    console.log(e.response)
+                    if(e.response.status == 404) {
+                        this.error_remove_material_dialog.message = 'Material tidak ditemukan.';
+                    }
+                    if(e.response.status == 400) {
+                        this.error_remove_material_dialog.message = e.response.data.message;
+                    }
+                    this.error_remove_material_dialog.is_show = true
                 })
         },
         cancelNewMaterial() {
@@ -694,8 +734,7 @@ export default {
     },
     watch: {
         prioritas(val) {
-            this.project.prioritas = val
-            console.log(val)
+            this.project.prioritas = parseInt(val)
             this.save()
         },
     }

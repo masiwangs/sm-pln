@@ -200,7 +200,7 @@
             newSKKI(basket) {
                 let form_data = new FormData();
                 form_data.append('basket', basket)
-                this.$axios.post('/skkis')
+                this.$axios.post('/skkis', form_data)
                     .then(res => {
                         this.$router.push('/projects/skki/'+res.data.data.id)
                     })

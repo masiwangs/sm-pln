@@ -312,7 +312,7 @@ export default {
                     console.log(res.data.data)
                 })
                 .then(() => {
-                    this.$axios.get('/prks')
+                    this.$axios.get('/prks?basket='+this.form.basket)
                         .then(res => {
                             this.prks = res.data.data
                         })

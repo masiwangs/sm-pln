@@ -10,7 +10,7 @@
                 <nuxt-link 
                     :to="'/projects/prk/'+item.id" 
                     style="text-decoration:none" 
-                >{{ item.nama_project }}</nuxt-link>
+                >{{ item.nama_project ? item.nama_project : 'Untitled' }}</nuxt-link>
             </template>
 
             <template v-slot:item.jasas_sum="{ item }">
