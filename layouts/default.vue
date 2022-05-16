@@ -9,6 +9,7 @@
         >
             <v-list
                 rounded
+                class="pt-5"
             >
                 <v-list-item
                     to="/"
