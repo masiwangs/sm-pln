@@ -1,29 +1,35 @@
 <template>
-  <apexchart type="radialBar" height="120" width="120" :options="chartOptions" :series="series"></apexchart>
+    <apexchart type="radialBar" height="120" width="120" :options="chartOptions" :series="chartSeries"></apexchart>
 </template>
 
 <script>
-  export default {
+export default {
+    props: ['chartData'],
     data() {
-      return {
-        series: [70],
-          chartOptions: {
-            chart: {
-              height: 120,
-              type: 'radialBar',
-            },
-            plotOptions: {
-              radialBar: {
-                hollow: {
-                  size: '30%',
+        return {
+            chartOptions: {
+                chart: {
+                    height: 120,
+                    type: 'radialBar',
                 },
-                dataLabels: {
-                show: false
-                }
-              },
+                plotOptions: {
+                    radialBar: {
+                        hollow: {
+                        size: '30%',
+                        },
+                        dataLabels: {
+                        show: false
+                        }
+                    },
+                },
             },
-          },
-      }
+        }
+    },
+    computed: {
+        chartSeries: function() {
+            console.log(this.chartData)
+            return [parseInt(this.chartData*100)]
+        }
     }
   }
 </script>
